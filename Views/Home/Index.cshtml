@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <button id="findPrinters" class="btn btn-primary">Find Printers</button>
+    <div id="popup" style="display: none;">
+        <h2>Select a Printer:</h2>
+        <ul id="printerStatusList"></ul>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#findPrinters').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/PrinterLookup/GetPrinterStatusList',
+                type: 'GET',
+                success: function (data) {
+                    var $list = $('#printerStatusList').empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $list.append('<li><input type="radio" name="printer" value="' + data[i].name + '"> ' + data[i].name + ': ' + data[i].status + '</li>');
+                    }
+                    $('#popup').show();
+                },
+                error: function (request, status, error) {
+                    console.log("Error:");
+                    console.log("Request: " + JSON.stringify(request));
+                    console.log("Status: " + status);
+                    console.log("Error: " + error);
+                }
+            });
+        });
+    });
+</script>
